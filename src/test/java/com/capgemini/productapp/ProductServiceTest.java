@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.capgemini.productapp.entity.Product;
+import com.capgemini.productapp.exception.ProductNotFoundException;
 import com.capgemini.productapp.repository.ProductRepository;
 import com.capgemini.productapp.service.ProductService;
 import com.capgemini.productapp.service.impl.ProductServiceImpl;
@@ -49,15 +50,15 @@ public class ProductServiceTest {
 		Product product = new Product(2, "nokia", "phone", 5000);
 		when(productRepository.save(product)).thenReturn(product);
 		Product addProduct = productServiceImpl.addProduct(product);
-		assertEquals(1, addProduct.getProductId());
+		assertEquals(2, addProduct.getProductId());
 	}
 	
 	@Test
 	public void testUpdateProduct() {
 		Product product = new Product(2, "samsung", "phone", 5000);
 		when(productRepository.save(product)).thenReturn(product);
-		Product addProduct = productServiceImpl.addProduct(product);
-		assertEquals(1, addProduct.getProductId());
+		Product updateProduct = productServiceImpl.updateProduct(product);
+		assertEquals(2, updateProduct.getProductId());
 	}
 
      @Test
@@ -66,5 +67,14 @@ public class ProductServiceTest {
 		productServiceImpl.delete(product);
 
 	}
+     
+     @Test
+ 	public void testFindProductById() throws ProductNotFoundException {
+ 		Product product = new Product(12, "Munch", "chocolates", 10.0);
+ 		Optional<Product> product1 = Optional.of(product);
+
+ 		when(productRepository.findById(product.getProductId())).thenReturn(product1);
+ 		assertEquals(productServiceImpl.findProductById(product.getProductId()), product);
+ 	}
 	
 }
